@@ -39,6 +39,14 @@
             fname = patient.name[0].given.join(' ');
             lname = patient.name[0].family;
           }
+          var p = defaultPatient();
+          p.birthdate = dobStr;
+          p.gender = gender;
+          p.fname = fname;
+          p.lname = lname;
+          p.age = parseInt(calculateAge(dob));
+          p.height = getQuantityValueAndUnit(height[0]);
+          
           ret.resolve(p);
         });
       } else {
