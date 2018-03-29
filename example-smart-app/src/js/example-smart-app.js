@@ -39,6 +39,7 @@
             fname = patient.name[0].given.join(' ');
             lname = patient.name[0].family;
           }
+          ret.resolve(p);
         });
       } else {
         onError();
