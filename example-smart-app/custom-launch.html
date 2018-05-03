@@ -26,8 +26,8 @@
           return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
       };
       var client_id = getUrlParameter("client_id");
-      if (client_id) {
-        client_id = '1ef33d88-ffa0-474f-9094-1f21b48ef982';
+      if (!client_id) {
+        alert("No client_id specified as a url parameter.");
       }
       // df7c5a17-52dd-4c88-8a32-cdfb557ba758
       FHIR.oauth2.authorize({
