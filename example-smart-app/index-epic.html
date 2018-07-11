@@ -69,6 +69,25 @@
         </tr>
       </table>
     </div>
+    <form id="searchForm" class="well" style="margin-top:10px">
+    <label>Category: </label>
+    <select id="category">
+      <option value="">All</option>
+      <option value="problem" selected>Problem</option>
+      <option value="diagnosis">Diagnosis</option>
+    </select>
+    <label>Clinical Status: </label>
+    <select id="status">
+      <option value="">All</option>
+      <option value="active" selected>Active</option>
+      <option value="resolved">Resolved</option>
+    </select>
+    <input type="submit" style="display: none" />
+    <input type="submit">
+  </form>
+  <table id="result" class="table display" width="100%">
+  </table>
+  
     <!-- Required JS files to enable this page to embed within an MPage -->
     <script src='https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.26.0/polyfill.min.js'></script>
     <!--
