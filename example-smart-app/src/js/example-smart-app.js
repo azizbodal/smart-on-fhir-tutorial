@@ -47,7 +47,7 @@
           p.fname = fname;
           p.lname = lname;
           p.age = parseInt(calculateAge(dob));
-          p.height = getQuantityValueAndUnit(height[0]);
+          //p.height = getQuantityValueAndUnit(height[0]);
           
           ret.resolve(p);
         });
@@ -133,11 +133,11 @@
     $('#gender').html(p.gender);
     $('#birthdate').html(p.birthdate);
     $('#age').html(p.age);
-    $('#height').html(p.height);
-    $('#systolicbp').html(p.systolicbp);
-    $('#diastolicbp').html(p.diastolicbp);
-    $('#ldl').html(p.ldl);
-    $('#hdl').html(p.hdl);
+//    $('#height').html(p.height);
+//     $('#systolicbp').html(p.systolicbp);
+//     $('#diastolicbp').html(p.diastolicbp);
+//     $('#ldl').html(p.ldl);
+//     $('#hdl').html(p.hdl);
   };
 
 })(window);
