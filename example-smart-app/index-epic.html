@@ -117,6 +117,144 @@
           $('#errors').html('<p> Failed to call FHIR Service </p>');
         }
       );
+    function RefreshToken() {
+      FHIR.oauth2.ready(
+        function (smart) {
+          window.smart = smart;
+          console.info('Token refreshed.')
+        },
+        function () {
+          console.error('Error while refreshing token.');
+        }
+      );
+    }
+
+    $('#searchForm').on('submit',
+      function (e) {
+        e.preventDefault();
+        let category = $("#category").val()
+        let status = $("#status").val()
+        Search(category, status);
+      });
+
+    function Search(category, status) {
+      //condition
+      let searchParameters = {
+        type: 'Condition',
+        query: {
+          patient: smart.patient.id,
+        }
+      };
+      if (category) {
+        searchParameters.query.category = category;
+      };
+      if (status) {
+        searchParameters.query.clinicalstatus = status
+      };
+      //
+      smart.api.search(searchParameters).then(
+        function (conditions) {
+          window.conditions = conditions;
+          console.log(conditions);
+          conditions.data.entry.forEach(element => {
+            element.cancelLink = '<button onclick=\'DeleteCondition("'+element.resource.id+'")\'>Delete</button>';
+            element.resolveLink = '<button onclick=\'ResolveCondition("'+element.resource.id+'")\'>Resolve</button>';
+          });
+          $('#result').DataTable({
+            "destroy": true,
+            "searching": true,
+            "pageLength": 50,
+            "autoWidth": true,
+            "order": [[4, 'desc']],
+            "lengthMenu": [[50, 200, -1], [50, 200, "All"]],
+            "data": conditions.data.entry,
+            "columns": [
+              { "data": "resource.id", "title": "#" },
+              { "data": "resource.code.text", "title": "Title" },
+              { "data": "resource.category.text", "title": "Category" },
+              { "data": "resource.clinicalStatus", "title": "Clinical Status", "defaultContent": "" },
+              { "data": "resource.meta.lastUpdated", "title": "Last Updated"},
+              { "data": "resource.verificationStatus", "title": "Verification Status" },
+              { "data": "resource.dateRecorded", "title": "Recorded Date" },
+              { "data": "cancelLink", "title": "" },
+              { "data": "resolveLink", "title": "" }
+            ]
+          });;
+        }
+      )
+    }
+
+    function DeleteCondition(id) {
+      let entries = conditions.data.entry;
+      let index = entries.findIndex(x => x.resource.id == id);
+      if (index >= 0) {
+        let condition = entries[index].resource;
+        condition.verificationStatus = "entered-in-error";
+        //
+        XMLHttpRequest.prototype.open = function () {
+          var res = open.apply(this, arguments);
+          this.setRequestHeader('If-Match', 'W/"'+ condition.meta.versionId +'"');
+          return res;
+        }
+        //
+        smart.api.update({ resource: condition }).then(
+          function (r) {
+            console.log('"' + condition.code.text + '" has been deleted!');
+            alert('"' + condition.code.text + '" has been deleted!')
+          },        
+          function (error) {            
+            console.log("delete condtion failed");
+            console.log(error);
+          }
+        );
+      }
+    }
+
+    function ResolveCondition(id) {
+      let entries = conditions.data.entry;
+      let index = entries.findIndex(x => x.resource.id == id);      
+      if (index >= 0) {
+        smart.patient.condition.open()
+
+        let condition = entries[index].resource;
+        condition.clinicalStatus = "resolved";
+        //        
+        XMLHttpRequest.prototype.open = function () {
+          var res = open.apply(this, arguments);
+          this.setRequestHeader('If-Match', 'W/"'+ condition.meta.versionId +'"');
+          return res;
+        }
+        //
+        smart.api.update({ resource: condition }).done(function (r) {
+          alert('"' + condition.code.text + '" has been resolved!');
+        }).fail(function(error){
+          console.log(error);
+        });
+      }
+    }
+
+    function AddProblem(text, snomedCode, snomedTitle) {
+      let resource = {
+        "resourceType": "Condition",
+        "patient": {
+          "reference": "Patient/" + smart.patient.id
+        },
+        "code": {
+          "coding": [{
+            "system": "http://snomed.info/sct",
+            "code": snomedCode,
+            "display": snomedTitle,
+          }
+          ],
+          "text": text,
+        },
+        "clinicalStatus": "active",
+        "verificationStatus": "confirmed"
+      };
+      smart.api.create({ resource: resource }).done(function (r) {
+        console.log("problem added!");
+      });
+    }
     </script>
   </body>
 </html>
