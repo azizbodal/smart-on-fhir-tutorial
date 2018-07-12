@@ -204,11 +204,11 @@
         let condition = entries[index].resource;
         condition.verificationStatus = "entered-in-error";
         //
-        XMLHttpRequest.prototype.open = function () {
-          var res = open.apply(this, arguments);
-          this.setRequestHeader('If-Match', 'W/"'+ condition.meta.versionId +'"');
-          return res;
-        }
+//         XMLHttpRequest.prototype.open = function () {
+//           var res = open.apply(this, arguments);
+//           this.setRequestHeader('If-Match', 'W/"'+ condition.meta.versionId +'"');
+//           return res;
+//         }
         //
         smart.api.update({ resource: condition }).then(
           function (r) {
@@ -232,11 +232,11 @@
         let condition = entries[index].resource;
         condition.clinicalStatus = "resolved";
         //        
-        XMLHttpRequest.prototype.open = function () {
-          var res = open.apply(this, arguments);
-          this.setRequestHeader('If-Match', 'W/"'+ condition.meta.versionId +'"');
-          return res;
-        }
+//         XMLHttpRequest.prototype.open = function () {
+//           var res = open.apply(this, arguments);
+//           this.setRequestHeader('If-Match', 'W/"'+ condition.meta.versionId +'"');
+//           return res;
+//         }
         //
         smart.api.update({ resource: condition }).done(function (r) {
           alert('"' + condition.code.text + '" has been resolved!');
