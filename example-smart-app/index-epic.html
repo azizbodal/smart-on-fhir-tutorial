@@ -227,7 +227,7 @@
       let entries = conditions.data.entry;
       let index = entries.findIndex(x => x.resource.id == id);      
       if (index >= 0) {
-        smart.patient.condition.open()
+        //smart.patient.condition.open()
 
         let condition = entries[index].resource;
         condition.clinicalStatus = "resolved";
