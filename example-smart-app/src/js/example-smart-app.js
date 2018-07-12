@@ -8,6 +8,8 @@
     }
 
     function onReady(smart)  {
+      //set smart as global object
+      window.smart = smart;
       if (smart.hasOwnProperty('patient')) {
         var patient = smart.patient;
         var pt = patient.read();
